@@ -1,0 +1,25 @@
+{
+  "name": "backend-learning-studio",
+  "version": "1.0.0",
+  "description": "Aplikasi Web Interaktif & Server Express untuk Belajar Fundamental Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "backend",
+    "express",
+    "nodejs",
+    "learning",
+    "fundamental",
+    "crud",
+    "rest-api"
+  ],
+  "author": "Miko",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

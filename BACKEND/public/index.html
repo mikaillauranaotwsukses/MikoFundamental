@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Mikail Backend Studio - Belajar Fundamental Backend Web</title>
+  <meta name="description" content="Platform pembelajaran interaktif fundamental backend website, REST API, HTTP Methods, Middleware, dan Database dengan Node.js dan Express.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- TOP HEADER -->
+    <header class="main-header">
+      <div class="header-left">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">
+          <h1>Mikail Backend Studio</h1>
+          <span class="logo-badge">Interactive Learning Playground</span>
+        </div>
+      </div>
+
+      <!-- SERVER HEALTH & STATS -->
+      <div class="header-stats" id="serverStats">
+        <div class="stat-pill online-indicator" id="statusIndicator">
+          <span class="pulse-dot"></span>
+          <span id="serverStatusText">Server Online</span>
+        </div>
+        <div class="stat-pill" title="Jumlah data di database items.json">
+          <span class="stat-icon">📦</span>
+          <span class="stat-label">Data Items:</span>
+          <strong id="statItemsCount">3</strong>
+        </div>
+        <div class="stat-pill" title="Memory heap yang digunakan Node.js">
+          <span class="stat-icon">🧠</span>
+          <span class="stat-label">RAM:</span>
+          <strong id="statMemory">-- MB</strong>
+        </div>
+        <div class="stat-pill" title="Waktu aktif server">
+          <span class="stat-icon">⏱️</span>
+          <span class="stat-label">Uptime:</span>
+          <strong id="statUptime">0s</strong>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnResetDb" class="btn btn-secondary btn-sm" title="Kembalikan data ke awal">
+          <span>🔄</span> Reset Database
+        </button>
+        <button id="btnToggleTerminal" class="btn btn-primary btn-sm" title="Buka/Tutup Live Terminal">
+          <span>📜</span> Terminal <span class="badge-counter" id="logBadgeCounter">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="nav-tabs-wrapper">
+      <div class="nav-tabs" role="tablist">
+        <button class="nav-tab active" data-tab="tab-pipeline" id="tabNavPipeline">
+          <span class="tab-icon">🔄</span>
+          <span class="tab-title">1. Alur Kerja Backend</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-crud" id="tabNavCrud">
+          <span class="tab-icon">📦</span>
+          <span class="tab-title">2. CRUD Lab (REST API)</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-anatomy" id="tabNavAnatomy">
+          <span class="tab-icon">🔬</span>
+          <span class="tab-title">3. Anatomi HTTP Request</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-middleware" id="tabNavMiddleware">
+          <span class="tab-icon">🛡️</span>
+          <span class="tab-title">4. Middleware & Auth</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-status" id="tabNavStatus">
+          <span class="tab-icon">🚦</span>
+          <span class="tab-title">5. Status Code Explorer</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-guide" id="tabNavGuide">
+          <span class="tab-icon">📚</span>
+          <span class="tab-title">6. Rangkuman & Kode</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT BODY -->
+    <main class="main-content">
+
+      <!-- ================================================================= -->
+      <!-- TAB 1: ALUR KERJA BACKEND (PIPELINE VISUALIZER) -->
+      <!-- ================================================================= -->
+      <section id="tab-pipeline" class="tab-panel active">
+        <div class="section-intro">
+          <div class="intro-badge">Visual Konsep</div>
+          <h2>Bagaimana Backend Bekerja Saat Menerima Request?</h2>
+          <p>Ketika kamu mengetik URL di browser atau mengklik tombol di aplikasi, siklus <strong>Request & Response</strong> berikut akan terjadi dalam hitungan milidetik:</p>
+        </div>
+
+        <!-- INTERACTIVE PIPELINE FLOW -->
+        <div class="pipeline-container glass-card">
+          <div class="pipeline-flow" id="pipelineFlow">
+            <div class="pipeline-step" id="step-client">
+              <div class="step-badge">1</div>
+              <div class="step-icon">💻</div>
+              <div class="step-info">
+                <h4>Client (Browser / App)</h4>
+                <p>Mengirim HTTP Request dengan Method & Data</p>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow" id="arrow-1">➔</div>
+
+            <div class="pipeline-step" id="step-middleware">
+              <div class="step-badge">2</div>
+              <div class="step-icon">🧱</div>
+              <div class="step-info">
+                <h4>Express Middleware</h4>
+                <p>CORS, Body Parser (JSON), Logger, Auth Token</p>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow" id="arrow-2">➔</div>
+
+            <div class="pipeline-step" id="step-router">
+              <div class="step-badge">3</div>
+              <div class="step-icon">🚦</div>
+              <div class="step-info">
+                <h4>Routing & Controller</h4>
+                <p>Mencocokkan Endpoint URL & menjalankan fungsi logika</p>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow" id="arrow-3">➔</div>
+
+            <div class="pipeline-step" id="step-database">
+              <div class="step-badge">4</div>
+              <div class="step-icon">🗄️</div>
+              <div class="step-info">
+                <h4>Database / Storage</h4>
+                <p>Membaca atau menulis data (JSON Store / MySQL)</p>
+              </div>
+            </div>
+
+            <div class="pipeline-arrow" id="arrow-4">➔</div>
+
+            <div class="pipeline-step" id="step-response">
+              <div class="step-badge">5</div>
+              <div class="step-icon">📤</div>
+              <div class="step-info">
+                <h4>HTTP Response (JSON)</h4>
+                <p>Mengembalikan Status Code (200, 201, 404) & Data</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pipeline-controls">
+            <button id="btnSimulatePipeline" class="btn btn-primary btn-lg">
+              <span>▶️</span> Jalankan Simulasi Alur Request
+            </button>
+            <span class="pipeline-status-text" id="pipelineStatusText">Klik tombol untuk melihat animasi pengiriman data langkah demi langkah.</span>
+          </div>
+        </div>
+
+        <!-- CORE CONCEPT CARDS -->
+        <div class="concepts-grid">
+          <div class="concept-card glass-card">
+            <div class="concept-header">
+              <span class="concept-icon">📡</span>
+              <h3>Apa itu Backend?</h3>
+            </div>
+            <p>Backend adalah bagian "di balik layar" website yang bertugas menyimpan data, memproses logika bisnis, menjaga keamanan otentikasi, dan melayani data ke frontend melalui <strong>API</strong>.</p>
+          </div>
+
+          <div class="concept-card glass-card">
+            <div class="concept-header">
+              <span class="concept-icon">🔗</span>
+              <h3>Apa itu REST API?</h3>
+            </div>
+            <p>REST API (Representational State Transfer) adalah standar komunikasi antara client dan server menggunakan protokol HTTP standar (GET, POST, PUT, DELETE) dengan data berformat <strong>JSON</strong>.</p>
+          </div>
+
+          <div class="concept-card glass-card">
+            <div class="concept-header">
+              <span class="concept-icon">⚙️</span>
+              <h3>Peran Node.js & Express</h3>
+            </div>
+            <p><strong>Node.js</strong> memungkinkan JavaScript berjalan di server, sedangkan <strong>Express.js</strong> adalah framework minimalis & cepat untuk membuat routing API dan middleware dengan mudah.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 2: CRUD LAB (REST API PLAYGROUND) -->
+      <!-- ================================================================= -->
+      <section id="tab-crud" class="tab-panel">
+        <div class="section-intro">
+          <div class="intro-badge">Hands-on Praktek</div>
+          <h2>CRUD Lab: Create, Read, Update, Delete</h2>
+          <p>Operasi paling mendasar dalam backend adalah <strong>CRUD</strong>. Coba buat, baca, ubah, dan hapus data di bawah ini, lalu amati respon JSON dan log server!</p>
+        </div>
+
+        <div class="crud-layout">
+          <!-- LEFT: ACTION CARDS & FORM -->
+          <div class="crud-left">
+            <!-- CUSTOM API COMMAND CONSOLE (FORMULIR PENULISAN PERINTAH) -->
+            <div class="action-box glass-card command-console-box">
+              <div class="console-header-badge">
+                <span class="badge badge-primary">🎮 Custom Request Bar</span>
+                <span class="text-dim text-xs">Ketik method & endpoint sesukamu!</span>
+              </div>
+              <h3>⌨️ Tulis & Jalankan Perintah API Kustom</h3>
+              <p class="text-muted">Ketik langsung method HTTP, endpoint URL, dan data JSON yang ingin Anda kirim ke backend:</p>
+
+              <!-- QUICK TEMPLATE BUTTONS -->
+              <div class="template-presets">
+                <span class="preset-label">Template Cepat:</span>
+                <button type="button" class="btn-preset" data-method="GET" data-url="/api/items">GET All</button>
+                <button type="button" class="btn-preset" data-method="GET" data-url="/api/items/1">GET ID #1</button>
+                <button type="button" class="btn-preset" data-method="POST" data-url="/api/items" data-body='{"title": "Belajar Async Await", "category": "Fundamental", "completed": false}'>POST Baru</button>
+                <button type="button" class="btn-preset" data-method="PUT" data-url="/api/items/1" data-body='{"title": "HTTP Methods & Status Codes Mastered", "completed": true}'>PUT Update #1</button>
+                <button type="button" class="btn-preset" data-method="DELETE" data-url="/api/items/2">DELETE #2</button>
+              </div>
+
+              <!-- MAIN COMMAND INPUT BAR -->
+              <form id="customCommandForm" class="custom-command-form">
+                <div class="command-input-bar">
+                  <select id="customMethod" class="method-selector tag-get">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="PATCH">PATCH</option>
+                  </select>
+
+                  <div class="url-input-container">
+                    <span class="url-prefix">http://localhost:3000</span>
+                    <input type="text" id="customUrl" class="form-control url-input" value="/api/items" placeholder="/api/items atau /api/items/1" required>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-execute" id="btnExecuteCommand">
+                    <span>🚀</span> Kirim
+                  </button>
+                </div>
+
+                <!-- OPTIONAL REQUEST BODY ACCORDION -->
+                <div class="body-editor-container" id="customBodyContainer" style="display: none;">
+                  <div class="body-editor-header">
+                    <label for="customBody">📦 Request Body (JSON Payload):</label>
+                    <span class="json-validation-badge valid" id="jsonValidationBadge">JSON Valid ✓</span>
+                  </div>
+                  <textarea id="customBody" class="form-control code-font" rows="4" placeholder='{
+  "title": "Nama topik baru",
+  "category": "Fundamental",
+  "completed": false
+}'>{
+  "title": "Belajar Express Routing Lanjutan",
+  "category": "Fundamental",
+  "completed": false
+}</textarea>
+                </div>
+
+                <!-- OPTIONAL HEADERS ACCORDION -->
+                <div class="headers-toggle-row">
+                  <button type="button" class="btn-link-toggle" id="btnToggleHeaders">
+                    <span>⚙️</span> Atur Request Headers (Opsional)
+                  </button>
+                  <div id="customHeadersContainer" style="display: none; margin-top: 8px;">
+                    <input type="text" id="customAuthHeader" class="form-control" placeholder="Authorization: Bearer secret-token (opsional)">
+                  </div>
+                </div>
+              </form>
+
+              <!-- HINT PERINTAH -->
+              <div class="command-hints">
+                <small class="text-dim">💡 <strong>Tips Perintah yang Bisa Dicoba:</strong></small>
+                <ul class="hint-list">
+                  <li><code>GET /api/items</code> ➔ Mengambil semua data</li>
+                  <li><code>GET /api/items?search=HTTP&completed=true</code> ➔ Filter query</li>
+                  <li><code>GET /api/items/999</code> ➔ Uji coba respon 404 Not Found</li>
+                  <li><code>POST /api/items</code> ➔ Tambah data baru dengan Request Body JSON</li>
+                  <li><code>DELETE /api/items/1</code> ➔ Menghapus item dengan ID 1</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- QUICK ACTION BUTTONS -->
+            <div class="action-box glass-card">
+              <h3>⚡ Quick API Triggers</h3>
+              <p class="text-muted">Atau klik shortcut instan berikut untuk trigger cepat ke server backend:</p>
+              
+              <div class="http-action-buttons">
+                <button class="btn-http btn-get" id="btnCrudGetAll">
+                  <span class="method-tag tag-get">GET</span>
+                  <span class="url-label">/api/items</span>
+                  <span class="action-desc">Ambil Semua Data</span>
+                </button>
+
+                <button class="btn-http btn-get" id="btnCrudGetOne">
+                  <span class="method-tag tag-get">GET</span>
+                  <span class="url-label">/api/items/1</span>
+                  <span class="action-desc">Ambil Item ID #1</span>
+                </button>
+
+                <button class="btn-http btn-delete" id="btnCrudDeleteDemo">
+                  <span class="method-tag tag-delete">DELETE</span>
+                  <span class="url-label">/api/items/3</span>
+                  <span class="action-desc">Hapus Item ID #3</span>
+                </button>
+              </div>
+
+              <!-- FILTER & SEARCH -->
+              <div class="filter-group">
+                <h4>🔍 Filter dengan Query Params (<code>req.query</code>)</h4>
+                <div class="filter-inputs">
+                  <input type="text" id="filterSearch" placeholder="Cari judul (misal: HTTP, CRUD)..." class="form-control">
+                  <select id="filterCategory" class="form-control">
+                    <option value="">Semua Kategori</option>
+                    <option value="Fundamental">Fundamental</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Practical">Practical</option>
+                  </select>
+                  <button id="btnApplyFilter" class="btn btn-secondary">Terapkan Filter</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FORM CREATE / UPDATE -->
+            <div class="action-box glass-card">
+              <h3 id="formTitle">📝 Form Tambah Item Cepat (<code>POST /api/items</code>)</h3>
+              <form id="crudForm">
+                <input type="hidden" id="itemId" value="">
+                
+                <div class="form-group">
+                  <label for="itemTitle">Judul Item / Topik <span class="text-danger">*</span></label>
+                  <input type="text" id="itemTitle" class="form-control" placeholder="Contoh: Belajar Database PostgreSQL" required>
+                  <small class="form-hint">Akan dikirim sebagai <code>req.body.title</code></small>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="itemCategory">Kategori</label>
+                    <select id="itemCategory" class="form-control">
+                      <option value="Fundamental">Fundamental</option>
+                      <option value="Architecture">Architecture</option>
+                      <option value="Practical">Practical</option>
+                      <option value="Database">Database</option>
+                      <option value="Security">Security</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group checkbox-group">
+                    <label>
+                      <input type="checkbox" id="itemCompleted">
+                      <span>Status Selesai (Completed)</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-buttons">
+                  <button type="submit" class="btn btn-primary" id="btnSubmitItem">
+                    <span id="submitIcon">➕</span> <span id="submitText">Simpan Item (POST)</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btnCancelEdit" style="display: none;">
+                    Batal Edit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- RIGHT: LIVE DATABASE VIEW & RAW RESPONSE INSPECTOR -->
+          <div class="crud-right">
+            <!-- CURRENT DB ITEMS -->
+            <div class="db-viewer glass-card">
+              <div class="db-header">
+                <h3>🗄️ Isi Database Server Saat Ini (<code>data/items.json</code>)</h3>
+                <span class="badge" id="dbItemsCount">3 Items</span>
+              </div>
+              
+              <div class="db-table-container">
+                <table class="db-table" id="itemsTable">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Judul</th>
+                      <th>Kategori</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="itemsTableBody">
+                    <!-- Populated via Javascript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- RAW HTTP RESPONSE VIEWER -->
+            <div class="response-inspector glass-card">
+              <div class="inspector-header">
+                <div class="inspector-title">
+                  <span class="inspector-icon">📡</span>
+                  <h4>Server Response Inspector</h4>
+                </div>
+                <div class="inspector-meta" id="responseMeta">
+                  <span class="status-badge status-200" id="resStatusCode">200 OK</span>
+                  <span class="res-time" id="resDuration">12ms</span>
+                </div>
+              </div>
+
+              <div class="code-preview-box">
+                <div class="code-preview-header">
+                  <span>Raw JSON Response</span>
+                  <button class="btn-copy" id="btnCopyResponse" title="Salin JSON">📋 Copy</button>
+                </div>
+                <pre class="code-block"><code id="responseJsonOutput">// Respon dari server backend akan muncul di sini...</code></pre>
+              </div>
+
+              <div class="curl-box">
+                <span class="curl-label">cURL Command:</span>
+                <code id="curlOutput">curl -X GET http://localhost:3000/api/items</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 3: ANATOMI HTTP REQUEST -->
+      <!-- ================================================================= -->
+      <section id="tab-anatomy" class="tab-panel">
+        <div class="section-intro">
+          <div class="intro-badge">Deep Dive</div>
+          <h2>Anatomi HTTP Request: Parameter, Query, Header, & Body</h2>
+          <p>Bagaimana backend menerima data dari klien? Ada 4 cara utama pengiriman data dalam protokol HTTP:</p>
+        </div>
+
+        <div class="anatomy-grid">
+          <!-- BUILDER FORM -->
+          <div class="anatomy-builder glass-card">
+            <h3>🔬 Interactive Request Builder</h3>
+            <p class="text-muted">Atur nilai di bawah ini dan klik tombol untuk melihat bagaimana Express membedah komponennya:</p>
+
+            <div class="form-group">
+              <label for="anatomyParam">1. URL Path Parameter (<code>req.params</code>)</label>
+              <div class="input-with-prefix">
+                <span class="prefix">/api/anatomy-demo/</span>
+                <input type="text" id="anatomyParam" class="form-control" value="miko-id-99" placeholder="masukkan parameter...">
+              </div>
+              <small class="form-hint">Digunakan untuk identifier spesifik (contoh: <code>/users/:id</code>)</small>
+            </div>
+
+            <div class="form-group">
+              <label for="anatomyQuery">2. Query String (<code>req.query</code>)</label>
+              <input type="text" id="anatomyQuery" class="form-control" value="sort=terbaru&limit=5&filter=active" placeholder="contoh: key1=val1&key2=val2">
+              <small class="form-hint">Digunakan untuk pencarian, sorting, filter, & pagination di URL setelah tanda <code>?</code></small>
+            </div>
+
+            <div class="form-group">
+              <label for="anatomyHeader">3. Custom Header (<code>req.headers</code>)</label>
+              <input type="text" id="anatomyHeader" class="form-control" value="Bearer rahasia-developer-key" placeholder="Authorization token...">
+              <small class="form-hint">Digunakan untuk metadata seperti token autentikasi, tipe konten, API Key</small>
+            </div>
+
+            <div class="form-group">
+              <label for="anatomyBody">4. JSON Request Body (<code>req.body</code>)</label>
+              <textarea id="anatomyBody" class="form-control code-font" rows="5">{
+  "namaPengguna": "Miko",
+  "minat": "Backend Development",
+  "level": "Beginner to Intermediate"
+}</textarea>
+              <small class="form-hint">Digunakan untuk mengirim data muatan berukuran besar pada method POST, PUT, atau PATCH</small>
+            </div>
+
+            <button id="btnSendAnatomy" class="btn btn-primary btn-block">
+              <span>🚀</span> Kirim Request & Bedah di Backend
+            </button>
+          </div>
+
+          <!-- ANATOMY BREAKDOWN EXPLANATION -->
+          <div class="anatomy-result glass-card">
+            <div class="inspector-header">
+              <h4>🔍 Hasil Pemotongan Data oleh Express Server</h4>
+              <span class="badge badge-success">Method: POST</span>
+            </div>
+
+            <div class="anatomy-breakdown-cards" id="anatomyBreakdown">
+              <div class="anatomy-card">
+                <div class="card-tag tag-purple">req.params</div>
+                <div class="card-content">
+                  <pre><code id="outParams">{ "paramContoh": "miko-id-99" }</code></pre>
+                </div>
+              </div>
+
+              <div class="anatomy-card">
+                <div class="card-tag tag-blue">req.query</div>
+                <div class="card-content">
+                  <pre><code id="outQuery">{ "sort": "terbaru", "limit": "5", "filter": "active" }</code></pre>
+                </div>
+              </div>
+
+              <div class="anatomy-card">
+                <div class="card-tag tag-orange">req.headers</div>
+                <div class="card-content">
+                  <pre><code id="outHeaders">{ "authorization": "Bearer ...", "content-type": "application/json" }</code></pre>
+                </div>
+              </div>
+
+              <div class="anatomy-card">
+                <div class="card-tag tag-green">req.body</div>
+                <div class="card-content">
+                  <pre><code id="outBody">{ "namaPengguna": "Miko", "minat": "Backend Development" }</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 4: MIDDLEWARE & AUTHENTICATION -->
+      <!-- ================================================================= -->
+      <section id="tab-middleware" class="tab-panel">
+        <div class="section-intro">
+          <div class="intro-badge">Security & Flow</div>
+          <h2>Middleware & Autentikasi (Bearer Token)</h2>
+          <p>Middleware adalah "satpam" gerbang di Express. Middleware dapat memeriksa apakah request memiliki izin (token) sebelum diizinkan masuk ke Controller.</p>
+        </div>
+
+        <div class="middleware-grid">
+          <!-- AUTH SIMULATOR -->
+          <div class="middleware-box glass-card">
+            <h3>🔐 Simulasi Login & Protected Route</h3>
+            <p class="text-muted">Coba akses protected route tanpa login, lalu login untuk mendapatkan Token dan akses kembali:</p>
+
+            <div class="auth-steps">
+              <!-- STEP 1: LOGIN -->
+              <div class="auth-step-box">
+                <h4>Langkah 1: Login ke Server (<code>POST /api/auth-demo/login</code>)</h4>
+                <div class="form-row">
+                  <input type="text" id="authUsername" class="form-control" value="miko" placeholder="Username (miko)">
+                  <input type="password" id="authPassword" class="form-control" value="rahasia123" placeholder="Password (rahasia123)">
+                </div>
+                <button id="btnAuthLogin" class="btn btn-primary btn-sm">
+                  <span>🔑</span> Kirim Request Login
+                </button>
+              </div>
+
+              <!-- TOKEN DISPLAY -->
+              <div class="token-container">
+                <label>Token Tersimpan di Client:</label>
+                <div class="token-display" id="tokenDisplay">
+                  <span id="tokenValue" class="text-muted">(Belum login / belum ada token)</span>
+                  <button id="btnClearToken" class="btn btn-xs btn-secondary" style="display: none;">Clear Token</button>
+                </div>
+              </div>
+
+              <!-- STEP 2: PROTECTED ROUTE -->
+              <div class="auth-step-box">
+                <h4>Langkah 2: Akses Protected Route (<code>GET /api/auth-demo/protected</code>)</h4>
+                <p class="text-muted text-sm">Endpoint ini dijaga oleh middleware <code>authenticateToken</code>. Jika header Authorization tidak valid, server akan menolak dengan status <strong>401 Unauthorized</strong> atau <strong>403 Forbidden</strong>.</p>
+                <div class="btn-group">
+                  <button id="btnAccessProtected" class="btn btn-success">
+                    <span>🛡️</span> Akses Endpoint Rahasia
+                  </button>
+                  <button id="btnAccessWithoutToken" class="btn btn-danger">
+                    <span>🚫</span> Paksa Akses Tanpa Token (Tes 401)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LATENCY / PROCESS SIMULATOR -->
+          <div class="middleware-box glass-card">
+            <h3>⏱️ Simulasi Latency & Request Timing</h3>
+            <p class="text-muted">Uji bagaimana middleware asynchronous dapat menahan request untuk memproses data lambat (enkripsi bcrypt, query database berat, atau external API):</p>
+            
+            <div class="latency-control">
+              <label for="latencyRange">Simulasi Durasi Proses Server: <strong id="latencyValue">800ms</strong></label>
+              <input type="range" id="latencyRange" min="100" max="3000" step="100" value="800" class="range-slider">
+              
+              <button id="btnTestLatency" class="btn btn-secondary btn-block">
+                <span>⏳</span> Jalankan Request dengan Delay
+              </button>
+            </div>
+
+            <!-- RESULT DISPLAY -->
+            <div class="middleware-output-box">
+              <div class="inspector-header">
+                <span>Hasil Response Autentikasi / Middleware:</span>
+                <span class="badge" id="mwStatusBadge">-</span>
+              </div>
+              <pre class="code-block"><code id="mwJsonOutput">// Respon pengujian middleware akan muncul di sini...</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 5: STATUS CODE EXPLORER -->
+      <!-- ================================================================= -->
+      <section id="tab-status" class="tab-panel">
+        <div class="section-intro">
+          <div class="intro-badge">Standar HTTP</div>
+          <h2>HTTP Status Code Explorer</h2>
+          <p>Status code memberitahu klien apa yang terjadi pada request mereka. Klik kartu di bawah untuk mengirim request nyata ke server dan melihat responnya:</p>
+        </div>
+
+        <!-- CATEGORY BADGES -->
+        <div class="status-category-pills">
+          <span class="cat-pill cat-2xx"><strong>2xx:</strong> Sukses (Success)</span>
+          <span class="cat-pill cat-3xx"><strong>3xx:</strong> Pengalihan (Redirection)</span>
+          <span class="cat-pill cat-4xx"><strong>4xx:</strong> Kesalahan Klien (Client Error)</span>
+          <span class="cat-pill cat-5xx"><strong>5xx:</strong> Kesalahan Server (Server Error)</span>
+        </div>
+
+        <div class="status-grid" id="statusGrid">
+          <!-- 200 OK -->
+          <div class="status-card border-2xx" data-code="200">
+            <div class="status-top">
+              <span class="status-number code-2xx">200</span>
+              <span class="status-badge-mini">OK</span>
+            </div>
+            <h4>Request Berhasil</h4>
+            <p>Standar untuk GET data yang sukses atau respon PUT yang mengembalikan data.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(200)">Tes 200</button>
+          </div>
+
+          <!-- 201 Created -->
+          <div class="status-card border-2xx" data-code="201">
+            <div class="status-top">
+              <span class="status-number code-2xx">201</span>
+              <span class="status-badge-mini">Created</span>
+            </div>
+            <h4>Data Berhasil Dibuat</h4>
+            <p>Digunakan saat operasi <code>POST</code> berhasil menambahkan data baru ke database.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(201)">Tes 201</button>
+          </div>
+
+          <!-- 204 No Content -->
+          <div class="status-card border-2xx" data-code="204">
+            <div class="status-top">
+              <span class="status-number code-2xx">204</span>
+              <span class="status-badge-mini">No Content</span>
+            </div>
+            <h4>Sukses Tanpa Body</h4>
+            <p>Request berhasil, namun server sengaja tidak mengirim payload JSON (misal sehabis DELETE).</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(204)">Tes 204</button>
+          </div>
+
+          <!-- 400 Bad Request -->
+          <div class="status-card border-4xx" data-code="400">
+            <div class="status-top">
+              <span class="status-number code-4xx">400</span>
+              <span class="status-badge-mini">Bad Request</span>
+            </div>
+            <h4>Format Data Tidak Valid</h4>
+            <p>Input client salah, format JSON rusak, atau ada field wajib yang kosong.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(400)">Tes 400</button>
+          </div>
+
+          <!-- 401 Unauthorized -->
+          <div class="status-card border-4xx" data-code="401">
+            <div class="status-top">
+              <span class="status-number code-4xx">401</span>
+              <span class="status-badge-mini">Unauthorized</span>
+            </div>
+            <h4>Belum Login / Tanpa Token</h4>
+            <p>Client belum login atau tidak menyertakan Token otentikasi di Header.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(401)">Tes 401</button>
+          </div>
+
+          <!-- 403 Forbidden -->
+          <div class="status-card border-4xx" data-code="403">
+            <div class="status-top">
+              <span class="status-number code-4xx">403</span>
+              <span class="status-badge-mini">Forbidden</span>
+            </div>
+            <h4>Tidak Memiliki Hak Akses</h4>
+            <p>Client sudah login, namun rolenya tidak diizinkan mengakses resource tersebut.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(403)">Tes 403</button>
+          </div>
+
+          <!-- 404 Not Found -->
+          <div class="status-card border-4xx" data-code="404">
+            <div class="status-top">
+              <span class="status-number code-4xx">404</span>
+              <span class="status-badge-mini">Not Found</span>
+            </div>
+            <h4>Data / URL Tidak Ditemukan</h4>
+            <p>Endpoint URL tidak terdaftar di router atau ID item tidak ada di database.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(404)">Tes 404</button>
+          </div>
+
+          <!-- 422 Unprocessable -->
+          <div class="status-card border-4xx" data-code="422">
+            <div class="status-top">
+              <span class="status-number code-4xx">422</span>
+              <span class="status-badge-mini">Unprocessable</span>
+            </div>
+            <h4>Gagal Validasi Bisnis</h4>
+            <p>Format syntax JSON benar, tetapi nilai tidak lolos aturan bisnis (misal email duplikat).</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(422)">Tes 422</button>
+          </div>
+
+          <!-- 429 Rate Limit -->
+          <div class="status-card border-4xx" data-code="429">
+            <div class="status-top">
+              <span class="status-number code-4xx">429</span>
+              <span class="status-badge-mini">Too Many Req</span>
+            </div>
+            <h4>Terlalu Banyak Request</h4>
+            <p>Client memborbardir request melebihi batas rate limit per detik/menit.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(429)">Tes 429</button>
+          </div>
+
+          <!-- 500 Server Error -->
+          <div class="status-card border-5xx" data-code="500">
+            <div class="status-top">
+              <span class="status-number code-5xx">500</span>
+              <span class="status-badge-mini">Server Error</span>
+            </div>
+            <h4>Bug Internal Server</h4>
+            <p>Terjadi error runtime yang tidak tertangani (unhandled exception) pada backend.</p>
+            <button class="btn btn-xs btn-status" onclick="triggerStatusCode(500)">Tes 500</button>
+          </div>
+        </div>
+
+        <!-- LIVE RESULT BOX -->
+        <div class="status-test-result glass-card" id="statusResultBox">
+          <div class="inspector-header">
+            <h4>Live Server Response untuk Status Code yang Dipilih</h4>
+            <span class="badge" id="statusDemoBadge">Siap Menguji</span>
+          </div>
+          <pre class="code-block"><code id="statusDemoOutput">// Klik salah satu tombol status code di atas untuk melihat respon real-time...</code></pre>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- TAB 6: PANDUAN & KODE SUMBER (CHEATSHEET) -->
+      <!-- ================================================================= -->
+      <section id="tab-guide" class="tab-panel">
+        <div class="section-intro">
+          <div class="intro-badge">Cheat Sheet & Referensi</div>
+          <h2>Panduan & Contoh Kode Backend Lengkap</h2>
+          <p>Pelajari pola sintaks Express.js yang sering digunakan di industri pengembangan backend nyata:</p>
+        </div>
+
+        <div class="guide-tabs-container glass-card">
+          <div class="guide-nav">
+            <button class="guide-nav-btn active" data-guide="snippet-setup">1. Inisialisasi Server</button>
+            <button class="guide-nav-btn" data-guide="snippet-routing">2. Membuat Route & CRUD</button>
+            <button class="guide-nav-btn" data-guide="snippet-middleware">3. Custom Middleware</button>
+            <button class="guide-nav-btn" data-guide="snippet-database">4. Koneksi Database</button>
+            <button class="guide-nav-btn" data-guide="snippet-errors">5. Error Handling</button>
+          </div>
+
+          <div class="guide-content">
+            <!-- SNIPPET 1: SETUP -->
+            <div class="guide-panel active" id="snippet-setup">
+              <h3>Inisialisasi Server Express Dasar</h3>
+              <p>Struktur paling ringkas untuk membuat web server dengan Express.js:</p>
+              <pre class="code-block"><code class="language-javascript">// 1. Import library Express
+const express = require('express');
+const app = express();
+const PORT = 3000;
+
+// 2. Middleware agar server bisa membaca JSON di request body
+app.use(express.json());
+
+// 3. Routing sederhana
+app.get('/', (req, res) => {
+  res.json({ message: 'Halo dari Backend Express!' });
+});
+
+// 4. Jalankan server pada port yang ditentukan
+app.listen(PORT, () => {
+  console.log(`Server aktif di http://localhost:${PORT}`);
+});</code></pre>
+            </div>
+
+            <!-- SNIPPET 2: ROUTING -->
+            <div class="guide-panel" id="snippet-routing">
+              <h3>Pola Standar RESTful Routing (CRUD)</h3>
+              <p>Penggunaan method HTTP yang tepat untuk setiap aksi data:</p>
+              <pre class="code-block"><code class="language-javascript">// [GET] Mengambil semua data
+app.get('/api/users', (req, res) => {
+  res.status(200).json({ data: users });
+});
+
+// [GET] Mengambil satu data berdasarkan ID (req.params)
+app.get('/api/users/:id', (req, res) => {
+  const userId = req.params.id;
+  res.status(200).json({ data: user });
+});
+
+// [POST] Membuat data baru (req.body)
+app.post('/api/users', (req, res) => {
+  const { name, email } = req.body;
+  res.status(201).json({ message: 'User berhasil dibuat' });
+});
+
+// [PUT] Memperbarui seluruh field data yang ada
+app.put('/api/users/:id', (req, res) => {
+  res.status(200).json({ message: 'User berhasil diupdate' });
+});
+
+// [DELETE] Menghapus data
+app.delete('/api/users/:id', (req, res) => {
+  res.status(200).json({ message: 'User berhasil dihapus' });
+});</code></pre>
+            </div>
+
+            <!-- SNIPPET 3: MIDDLEWARE -->
+            <div class="guide-panel" id="snippet-middleware">
+              <h3>Membuat Custom Middleware</h3>
+              <p>Middleware menerima 3 parameter: <code>(req, res, next)</code>. Panggil <code>next()</code> untuk melanjutkan:</p>
+              <pre class="code-block"><code class="language-javascript">// Contoh 1: Logger Middleware (Mencatat Waktu & URL)
+const loggerMiddleware = (req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next(); // Jangan lupa panggil next()!
+};
+
+// Pasang secara global ke semua request
+app.use(loggerMiddleware);
+
+// Contoh 2: Auth Middleware (Cek Token)
+const requireAuth = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    return res.status(401).json({ error: 'Token wajib disertakan!' });
+  }
+  next();
+};
+
+// Pasang pada route tertentu saja
+app.get('/api/rahasia', requireAuth, (req, res) => {
+  res.json({ secret: 'Data rahasia perusahaan' });
+});</code></pre>
+            </div>
+
+            <!-- SNIPPET 4: DATABASE -->
+            <div class="guide-panel" id="snippet-database">
+              <h3>Konsep Penyimpanan Data di Backend</h3>
+              <p>Bagaimana backend berkomunikasi dengan database relasional (PostgreSQL/MySQL) atau NoSQL (MongoDB):</p>
+              <pre class="code-block"><code class="language-javascript">// Menggunakan Async / Await dengan database (Contoh Prisma / SQL)
+app.get('/api/products', async (req, res) => {
+  try {
+    // 1. Query ke database secara asynchronous
+    const products = await db.product.findMany({
+      where: { inStock: true }
+    });
+
+    // 2. Kembalikan data hasil query
+    res.status(200).json({ status: 'success', data: products });
+  } catch (error) {
+    // 3. Tangani jika database error
+    res.status(500).json({ error: error.message });
+  }
+});</code></pre>
+            </div>
+
+            <!-- SNIPPET 5: ERRORS -->
+            <div class="guide-panel" id="snippet-errors">
+              <h3>Global Error Handler di Express</h3>
+              <p>Menangkap semua error yang terjadi di aplikasi agar server tidak crash tiba-tiba:</p>
+              <pre class="code-block"><code class="language-javascript">// 1. Handler jika endpoint URL tidak ditemukan (404)
+app.use((req, res, next) => {
+  res.status(404).json({
+    status: 'error',
+    message: 'Endpoint tidak ditemukan!'
+  });
+});
+
+// 2. Global Error Handler (Wajib 4 parameter: err, req, res, next)
+app.use((err, req, res, next) => {
+  console.error('Terjadi Error:', err.stack);
+  res.status(err.status || 500).json({
+    status: 'error',
+    message: err.message || 'Internal Server Error'
+  });
+});</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================================================================= -->
+    <!-- REAL-TIME SERVER TERMINAL / LIVE LOG DRAWER -->
+    <!-- ================================================================= -->
+    <aside class="terminal-drawer open" id="terminalDrawer">
+      <div class="terminal-header">
+        <div class="terminal-title">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-name">📡 Live Server Console (Real-time SSE Stream)</span>
+        </div>
+        
+        <div class="terminal-actions">
+          <label class="stream-toggle">
+            <input type="checkbox" id="chkAutoScroll" checked>
+            <span>Auto-scroll</span>
+          </label>
+          <button class="btn-terminal" id="btnClearTerminal" title="Bersihkan log">🗑️ Clear</button>
+          <button class="btn-terminal" id="btnMinimizeTerminal" title="Minimize/Maximize">↕️</button>
+        </div>
+      </div>
+
+      <div class="terminal-body" id="terminalLogs">
+        <div class="log-entry log-system">
+          <span class="log-time">[System]</span>
+          <span class="log-msg">Menginisialisasi koneksi ke server Node.js...</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
