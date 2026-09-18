@@ -27,6 +27,20 @@ void printMaze(int robotRow, int robotCol) {
     }
 }
 
+
+void findPosition(char target, int &outRow, int &outCol) {
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (maze[i][j] == target) {
+                outRow = i;
+                outCol = j;
+                return;
+            }
+        }
+    }
+    outRow = -1;
+    outCol = -1;
+}
 int main() {
 
     int robotRow = 1;
