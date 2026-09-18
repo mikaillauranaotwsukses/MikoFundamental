@@ -33,7 +33,7 @@ int main() {
     int robotCol = 1;
 
     string commands[] = {"RIGHT", "RIGHT", "DOWN", "DOWN"};
-    int totalCommands = sizeof(commands);
+    int totalCommands = sizeof(commands) / sizeof(commands[0]);
 
     cout << "Posisi awal:" << endl;
     printMaze(robotRow, robotCol);
