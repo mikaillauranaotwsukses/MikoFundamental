@@ -55,6 +55,3 @@ int main() {
 
     return 0;
 }
-
-
-ini saya coba otak atik kode fullnya. Apakah sudah benar?
