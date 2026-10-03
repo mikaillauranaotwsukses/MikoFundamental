@@ -1,24 +1,35 @@
 const express = require('express');
 const cors = require('cors');
-const pool = require('./config/db');
 require('dotenv').config();
-const bookRoutes = require('./routes/bookRoutes')
-const memberRoutes = require('./routes/memberRoutes');
-const borrowingRoutes = require('./routes/borrowingRoutes');
 
-const PORT = process.env.PORT;
+const authRoutes = require('./routes/authRoutes');
+const bukuRoutes = require('./routes/bukuRoutes');
+const anggotaRoutes = require('./routes/anggotaRoutes');
+const transaksiRoutes = require('./routes/transaksiRoutes');
+
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/books', bookRoutes);
-app.use('/api/member', memberRoutes);
-app.use('/api/borrow', borrowingRoutes);
 
-app.get('/', (req,res) => {
-    res.json({massage: "Berhasil Koneksi Database POSTGRES"});
+// Main Routes (Matching PerpusAPIGo specification)
+app.use('/api/auth', authRoutes);
+app.use('/api/buku', bukuRoutes);
+app.use('/api/anggota', anggotaRoutes);
+app.use('/api/transaksi', transaksiRoutes);
+
+// Aliases for compatibility
+app.use('/api/books', bukuRoutes);
+app.use('/api/member', anggotaRoutes);
+app.use('/api/borrow', transaksiRoutes);
+
+app.get('/', (req, res) => {
+    res.json({ message: "API Perpustakaan Berhasil Berjalan" });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server Berjalan di http:/localhost:${PORT}`);
-})
+    console.log(`Server Berjalan di http://localhost:${PORT}`);
+});
+
+module.exports = app;

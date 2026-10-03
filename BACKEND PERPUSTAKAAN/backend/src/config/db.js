@@ -9,12 +9,13 @@ const pool = new Pool({
     database: process.env.DB_NAME,
 });
 
-pool.connect((err) => {
-    if(err){
-        console.error("Gagal Koneksi Database: ",err.stack);
-    }else{
+pool.connect((err, client, release) => {
+    if (err) {
+        console.error("Gagal Koneksi Database: ", err.stack);
+    } else {
         console.log("Berhasil Koneksi ke Database");
+        if (release) release();
     }
-})
+});
 
 module.exports = pool;

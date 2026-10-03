@@ -1,0 +1,227 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "arkan-header",
+   "metadata": {},
+   "source": [
+    "# Bagian 2: Deskripsi Data, Kualitas Data, dan Statistik Deskriptif\n",
+    "\n",
+    "**Anggota:** Arkan Putra Ridhana - 5027261092  \n",
+    "**Kelompok:** 8  \n",
+    "**Bagian:** Sel 4–6 dari notebook EDA"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "judul-4",
+   "metadata": {},
+   "source": [
+    "## 4. Deskripsi Data dan Kamus Data\n",
+    "\n",
+    "**Sumber Data:**  \n",
+    "https://www.kaggle.com/datasets/atharvasoundankar/global-water-consumption-dataset-2000-2024\n",
+    "\n",
+    "**Lisensi:** No Copyright  \n",
+    "**Kontributor:** Atharva Soundankar  \n",
+    "**Periode Data:** 2000–2024  \n",
+    "**Cara Pengumpulan:** Tidak tertera di sumber  \n",
+    "**Jumlah Baris dan Kolom:** 500 baris × 10 kolom\n",
+    "\n",
+    "### Kamus Data\n",
+    "\n",
+    "| Kolom | Arti | Jenis Variabel | Skala | Satuan | Contoh |\n",
+    "| :--- | :--- | :--- | :--- | :--- | :--- |\n",
+    "| `Country` | Nama negara tempat pengukuran diambil | Kualitatif | Nominal | – | Argentina |\n",
+    "| `Year` | Tahun pencatatan data (2000–2024) | Kuantitatif diskrit | Interval | Tahun | 2000 |\n",
+    "| `Total Water Consumption (Billion Cubic Meters)` | Total konsumsi air bersih tahunan suatu negara | Kuantitatif kontinu | Rasio | Miliar m³ | 481.49 |\n",
+    "| `Per Capita Water Use (Liters per Day)` | Rata-rata konsumsi air bersih harian per orang | Kuantitatif kontinu | Rasio | Liter/hari | 235.43 |\n",
+    "| `Agricultural Water Use (%)` | Persentase penggunaan air di sektor pertanian | Kuantitatif kontinu | Rasio | % | 48.55 |\n",
+    "| `Industrial Water Use (%)` | Persentase penggunaan air di sektor industri | Kuantitatif kontinu | Rasio | % | 20.84 |\n",
+    "| `Household Water Use (%)` | Persentase penggunaan air di sektor rumah tangga | Kuantitatif kontinu | Rasio | % | 30.10 |\n",
+    "| `Rainfall Impact (Annual Precipitation in mm)` | Curah hujan tahunan yang diterima negara tersebut | Kuantitatif kontinu | Rasio | mm | 1288.70 |\n",
+    "| `Groundwater Depletion Rate (%)` | Tingkat penurunan/penyusutan cadangan air tanah tahunan | Kuantitatif kontinu | Rasio | % | 3.26 |\n",
+    "| `Water Scarcity Level` | Tingkat keparahan kelangkaan air bersih | Kualitatif | Ordinal | – | Moderate |\n",
+    "\n",
+    "**Catatan:** Kolom `Country` dan `Water Scarcity Level` adalah variabel kualitatif. Kolom `Year` berskala interval karena tahun tidak punya titik nol mutlak. Kolom lainnya berskala rasio karena punya titik nol mutlak (misalnya 0 m³ berarti tidak ada konsumsi)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "judul-5",
+   "metadata": {},
+   "source": [
+    "## 5. Pemeriksaan Kualitas Data\n",
+    "\n",
+    "Pada bagian ini kami memeriksa tipe data, data kosong, duplikat, dan rentang nilai untuk memastikan dataset layak dianalisis."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "load-data",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "from IPython.display import display\n",
+    "\n",
+    "# Load dataset\n",
+    "df = pd.read_csv(\"data/cleaned_global_water_consumption.csv\")\n",
+    "\n",
+    "# Rename kolom agar konsisten dan mudah dipakai\n",
+    "df = df.rename(columns={\n",
+    "    \"Total Water Consumption (Billion Cubic Meters)\": \"total_consumption\",\n",
+    "    \"Per Capita Water Use (Liters per Day)\": \"per_capita\",\n",
+    "    \"Agricultural Water Use (%)\": \"agri\",\n",
+    "    \"Industrial Water Use (%)\": \"industrial\",\n",
+    "    \"Household Water Use (%)\": \"household\",\n",
+    "    \"Rainfall Impact (Annual Precipitation in mm)\": \"rainfall\",\n",
+    "    \"Groundwater Depletion Rate (%)\": \"groundwater_depletion\",\n",
+    "    \"Water Scarcity Level\": \"scarcity\"\n",
+    "})\n",
+    "\n",
+    "print(\"Dimensi dataset:\", df.shape)\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cek-kualitas",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"Informasi tipe data:\")\n",
+    "df.info()\n",
+    "\n",
+    "print(\"\\nJumlah data kosong per kolom:\")\n",
+    "print(df.isna().sum())\n",
+    "\n",
+    "print(\"\\nJumlah baris duplikat:\")\n",
+    "print(df.duplicated().sum())\n",
+    "\n",
+    "print(\"\\nRingkasan nilai min dan max:\")\n",
+    "print(df.describe().T[['min', 'max']])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "interpretasi-kualitas",
+   "metadata": {},
+   "source": [
+    "### Rangkuman Kualitas Data\n",
+    "\n",
+    "- **Tidak ada data kosong** pada semua kolom (500 non-null dari 500 baris).\n",
+    "- **Tidak ada baris duplikat**.\n",
+    "- Tipe data sudah sesuai: kolom `Year` bertipe `int64`, kolom numerik lain `float64`, dan kolom `Country` serta `scarcity` bertipe `str`.\n",
+    "- Rentang nilai min–max sudah masuk akal, misalnya:\n",
+    "  - `Year`: 2000–2024\n",
+    "  - `total_consumption`: 129,64–798,42 miliar m³\n",
+    "  - `per_capita`: 111,71–404,35 liter/hari\n",
+    "  - `groundwater_depletion`: 1,30%–4,32%\n",
+    "\n",
+    "**Keputusan:** Tidak ada data yang perlu dihapus atau diperbaiki. Dataset siap dianalisis."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "judul-6",
+   "metadata": {},
+   "source": [
+    "## 6. Statistik Deskriptif Variabel Numerik\n",
+    "\n",
+    "Kami memilih tiga kolom numerik utama: `total_consumption`, `per_capita`, dan `rainfall`. Untuk setiap kolom dihitung ukuran pemusatan (mean, median, modus), penyebaran (min, max, jangkauan, varians, simpangan baku), dan letak (Q1, Q3, IQR)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "statistik-deskriptif",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "kolom_numerik = [\"total_consumption\", \"per_capita\", \"rainfall\"]\n",
+    "\n",
+    "ringkasan = []\n",
+    "for col in kolom_numerik:\n",
+    "    data = df[col]\n",
+    "    q1 = data.quantile(0.25)\n",
+    "    q3 = data.quantile(0.75)\n",
+    "    ringkasan.append({\n",
+    "        \"Variabel\": col,\n",
+    "        \"Rata-rata\": data.mean(),\n",
+    "        \"Median\": data.median(),\n",
+    "        \"Modus\": data.mode()[0],\n",
+    "        \"Min\": data.min(),\n",
+    "        \"Max\": data.max(),\n",
+    "        \"Jangkauan\": data.max() - data.min(),\n",
+    "        \"Varians\": data.var(),\n",
+    "        \"Simpangan Baku\": data.std(),\n",
+    "        \"Q1\": q1,\n",
+    "        \"Q3\": q3,\n",
+    "        \"IQR\": q3 - q1,\n",
+    "    })\n",
+    "\n",
+    "tabel_ringkasan = pd.DataFrame(ringkasan).set_index(\"Variabel\").T\n",
+    "display(tabel_ringkasan)\n",
+    "\n",
+    "# Perhitungan manual varians & simpangan baku (10 baris pertama per_capita)\n",
+    "sampel = df[\"per_capita\"].head(10)\n",
+    "n = len(sampel)\n",
+    "rerata_sampel = sampel.mean()\n",
+    "kuadrat_selisih = [(x - rerata_sampel) ** 2 for x in sampel]\n",
+    "varians_manual = sum(kuadrat_selisih) / (n - 1)\n",
+    "std_manual = varians_manual ** 0.5\n",
+    "\n",
+    "print(\"\\nHasil Perhitungan Manual (10 Baris Pertama):\")\n",
+    "print(\"Rata-rata Sampel :\", rerata_sampel)\n",
+    "print(\"Varians Manual   :\", varians_manual, \"| Pandas:\", sampel.var())\n",
+    "print(\"Std Dev Manual   :\", std_manual, \"| Pandas:\", sampel.std())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "interpretasi-statistik",
+   "metadata": {},
+   "source": [
+    "### Interpretasi Statistik Deskriptif\n",
+    "\n",
+    "1. **Total Water Consumption (`total_consumption`)**  \n",
+    "   Rata-rata **501,22 miliar m³** dan median **502,20 miliar m³** sangat berdekatan, menandakan sebaran **simetris** (tidak miring). Variansnya 9.231,16 dan simpangan baku 96,08 miliar m³, artinya konsumsi air antar observasi cukup bervariasi.\n",
+    "\n",
+    "2. **Per Capita Water Use (`per_capita`)**  \n",
+    "   Rata-rata **276,00 liter/hari** dan median **276,43 liter/hari**, juga simetris. Simpangan bakunya 42,67 liter/hari, lebih kecil dibanding total konsumsi, artinya pemakaian per orang relatif lebih seragam.\n",
+    "\n",
+    "3. **Rainfall Impact (`rainfall`)**  \n",
+    "   Rata-rata **1.544,82 mm/tahun** dan median **1.537,54 mm/tahun**, juga simetris. Namun simpangan bakunya paling besar (292,79 mm) dan IQR 392,67 mm, menandakan curah hujan **sangat bervariasi antar negara**.\n",
+    "\n",
+    "**Perhitungan manual varians dan simpangan baku** pada 10 baris pertama kolom `per_capita` dengan pembagi n − 1 = 9 menghasilkan:\n",
+    "- Rata-rata sampel: **246,2870**\n",
+    "- Varians manual: **4478,4150** — cocok 100% dengan `.var()` pandas\n",
+    "- Simpangan baku manual: **66,9210** — cocok 100% dengan `.std()` pandas"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.16"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
