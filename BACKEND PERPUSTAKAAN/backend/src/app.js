@@ -13,16 +13,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Main Routes (Matching PerpusAPIGo specification)
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/buku', bukuRoutes);
 app.use('/api/anggota', anggotaRoutes);
 app.use('/api/transaksi', transaksiRoutes);
-
-// Aliases for compatibility
-app.use('/api/books', bukuRoutes);
-app.use('/api/member', anggotaRoutes);
-app.use('/api/borrow', transaksiRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: "API Perpustakaan Berhasil Berjalan" });
