@@ -7,23 +7,16 @@ int main() {
     cout << "Input: ";
     cin >> n;
     cout << "Output:\n";
-
-    int i = 1;
-    while (i <= n) {
-        int j = n;
-        while (j > i) {
+    for (int i = 1; i <= n; i++){
+        for(int j = n; j > i; j--){
             cout << " ";
-            j--;
         }
 
-        int k = 1;
-        while (k <= i) {
-            cout << "😘"; 
-            k++;
+        for(int k = 1; k<= i; k++){
+            cout << "😘";
         }
-        
+
         cout << endl;
-        i++;
     }
 
     return 0;
