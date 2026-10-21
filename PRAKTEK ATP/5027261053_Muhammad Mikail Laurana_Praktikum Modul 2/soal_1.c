@@ -31,27 +31,21 @@ int main()
 
         int panjang = a[i - 1];
 
-        if (prima == 1)
-        {
+        if (prima == 1){
             
-            if (panjang < 7)
-            {
+            if (panjang < 7){
                 kurangEmas = kurangEmas + (7 - panjang);
             }
-            else
-            {
+            else{
                 lebihEmas = lebihEmas + (panjang - 7);
             }
         }
-        else
-        {
+        else{
             
-            if (panjang < 7)
-            {
+            if (panjang < 7){
                 kurangBesi = kurangBesi + (7 - panjang);
             }
-            else
-            {
+            else{
                 lebihBesi = lebihBesi + (panjang - 7);
             }
         }
